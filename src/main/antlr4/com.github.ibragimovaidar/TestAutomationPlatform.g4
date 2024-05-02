@@ -8,17 +8,19 @@ prog: features;
 
 // Feature
 features: feature*;
-feature: FEATURE ' ' featureName '{' command* '}';
+feature: FEATURE ' ' featureName '{' (variable|command|assertion)* '}';
 featureName: StringLiteral;
 
 
-// Variable
+// Assertion
+assertion: ASSERT ' ' variableName (' ' exression)* ';';
+exression: LetterCharacters ( '.' LetterCharacters)* '=' StringLiteral;
 
-variable: variableName '=' command;
+// Variable
+variable: variableName ' '* '=' ' '* command;
 variableName: LetterCharacters;
 
 // Command
-
 command: http_command | db_command;
 http_command: HTTP ' ' httpMethod ' ' httpUrl httpHeaders* httpBody* ';';
 db_command: DB ' ' db_query ';';
@@ -28,12 +30,15 @@ db_command: DB ' ' db_query ';';
 
 httpMethod : ('GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS');
 httpUrl : StringLiteral;
-httpBody: 'body:' (json | StringLiteral);
+httpBody: 'body:' (json | string);
 httpHeaders: 'headers:' json;
 
 // DB client command
 
 db_query: StringLiteral;
+
+// String
+string: StringLiteral;
 
 // JSON
 
